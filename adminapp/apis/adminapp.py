@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db import transaction
-from adminapp.models import CustomUser
+from adminapp.models import CustomUser, UserType
 from django.shortcuts import render, redirect
 
 from ..serializers import (
@@ -48,3 +48,37 @@ class RegisterAPI(APIView):
                 "msg": "User Registration Failed",
             }
             return Response(status=status.HTTP_400_BAD_REQUEST, data=data)
+
+
+class LoginAPI(APIView):
+    """API for Admin Login."""
+
+    authentication_classes = [SessionAuthentication]
+
+    def post(self, request):
+        serializer = CreateAdminUserSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None and user.user_type == UserType.ADMIN:
+                # Login successful, return user data
+                login(request, user)
+                data = {
+                   "Success": True,
+                   "msg": "Login Success",
+                }
+                return Response(status=status.HTTP_201_CREATED, data=data)
+            else:
+            # Login failed
+                return Response({'error': 'Invalid login credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            # Invalid data
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)            
+
+
+class LogOutAPI(APIView):
+    """API for Logout."""
+    def get(self, request):
+        logout(request)
+        return redirect("adminapp:login")            
