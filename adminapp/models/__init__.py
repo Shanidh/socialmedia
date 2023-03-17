@@ -1,0 +1,1 @@
+from .adminapp import CustomUser, UserType
