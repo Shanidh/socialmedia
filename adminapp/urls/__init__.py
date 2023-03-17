@@ -5,5 +5,5 @@ from django.urls import path
 app_name = "adminapp"
 
 urlpatterns = [
-    url("admin/", include("adminapp.urls.adminapp")),
+    url("adminuser/", include("adminapp.urls.adminapp")),
 ]

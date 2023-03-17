@@ -18,7 +18,6 @@ class CustomUser(AbstractUser):
 
     first_name = None
     last_name = None
-    is_staff = None
     groups = None
     user_permissions = None
     date_joined = None 
