@@ -1,2 +1,2 @@
 from .adminapp import CustomUser, UserType
-from .adminpost import Post, Image
+from .adminpost import Post, Image, Tag

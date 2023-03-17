@@ -11,7 +11,7 @@ class PostType(models.TextChoices):
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
-    weight = models.IntegerField()
+    weight = models.IntegerField(default=0)
 
 
 class Post(models.Model):
@@ -26,14 +26,6 @@ class Post(models.Model):
         help_text=_("User Type"),
         max_length=20,
         choices=PostType.choices,
-        null=True,
-    )
-
-    tags = models.ForeignKey(
-        help_text=_("Tag"),
-        to=Tag,
-        on_delete=models.CASCADE,
-        related_name="tags",
         null=True,
     )
 

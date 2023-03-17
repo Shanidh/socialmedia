@@ -15,13 +15,16 @@ from django.utils.decorators import method_decorator
 from django.db import transaction
 from adminapp.models import CustomUser, UserType
 from django.shortcuts import render, redirect
+from rest_framework.permissions import IsAuthenticated
 
 from ..serializers import (
     CreateAdminUserSerializer,
+    CreatePostSerializer,
 )
 
 from ..services import (
     create_admin_user,
+    create_post,
 )
 
 
@@ -82,3 +85,35 @@ class LogOutAPI(APIView):
     def get(self, request):
         logout(request)
         return redirect("adminapp:login")            
+
+
+class CreatePostAPI(APIView):
+    """API for creating post for Admin"""
+
+    authentication_classes = [SessionAuthentication]
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        try:
+            serializer = CreatePostSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            with transaction.atomic():
+                create_post(user=user, **serializer.validated_data)
+                data = {
+                    "Success": True,
+                    "msg": "New post created.",
+                }
+            return Response(status=status.HTTP_200_OK, data=data)
+        except ValidationError as e:
+            mes = "\n".join(e.messages)
+            raise ValidationError(mes)
+        except Exception:
+            error_info = "\n".join(traceback.format_exception(*sys.exc_info()))
+            print(error_info)
+            data = {
+                "Success": False,
+                "msg": "invalid",
+            }
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=data)
