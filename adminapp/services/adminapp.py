@@ -1,7 +1,8 @@
 from adminapp.models import CustomUser, UserType
 from django.contrib.auth import get_user_model
+from django.core.files.storage import FileSystemStorage
 
-from ..models import Post, Tag
+from ..models import Post, Tag, Image
 
 User = get_user_model()
 
@@ -32,4 +33,28 @@ def create_post(
             tag.save()
     else:
         tags = Tag(name=post_type, weight=1) 
-        tags.save()      
+        tags.save()     
+
+
+def upload_image(
+    user: User,
+    image: str,
+    description: str,
+    post_id=int,
+) -> None:  
+    post = Post.objects.get(pk=post_id)  
+    ext = os.path.splitext(image)[1]
+    valid_extensions = [".jpg", ".jpeg", ".png"]
+    if not ext in valid_extensions:
+        data = {
+                "Success": False,
+                "msg": "File not supported!",
+            }
+        return Response(status=status.HTTP_400_BAD_REQUEST, data=data)
+        # raise ValidationError(_("File not supported!"))  
+    obj1 = FileSystemStorage()
+    obj1.save(image)  
+    imageupload = Image(image=image, description=description, post=post) 
+    imageupload.save()   
+    return imageupload
+

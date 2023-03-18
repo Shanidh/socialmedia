@@ -18,7 +18,8 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
 
-    like = models.BooleanField(null=True, blank=True)
+    like = models.IntegerField(default=0)
+    dislike = models.IntegerField(default=0)
 
     created_date = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -37,5 +38,5 @@ class Image(models.Model):
         on_delete=models.CASCADE,
         related_name="images",
     )
-    image = models.FileField(upload_to='images/')
+    image = models.CharField(max_length=500, null=True)
     description = models.CharField(max_length=100)    
