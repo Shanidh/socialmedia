@@ -38,5 +38,5 @@ class Image(models.Model):
         on_delete=models.CASCADE,
         related_name="images",
     )
-    image = models.CharField(max_length=500, null=True)
-    description = models.CharField(max_length=100)    
+    image = models.FileField(upload_to='images/', null=True)
+    description = models.CharField(max_length=100, null=True)    

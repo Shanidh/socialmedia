@@ -5,3 +5,4 @@ def create_user(
     password: str,
 ) -> None:
     user = CustomUser.objects.create_user(username=username, password=password, user_type=UserType.USER)
+  

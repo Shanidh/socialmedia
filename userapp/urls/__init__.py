@@ -6,4 +6,5 @@ app_name = "userapp"
 
 urlpatterns = [
     url("", include("userapp.urls.userapp")),
+    url("", include("userapp.urls.userpost")),
 ]

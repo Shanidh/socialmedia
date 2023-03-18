@@ -52,9 +52,8 @@ def upload_image(
             }
         return Response(status=status.HTTP_400_BAD_REQUEST, data=data)
         # raise ValidationError(_("File not supported!"))  
-    obj1 = FileSystemStorage()
-    obj1.save(image)  
-    imageupload = Image(image=image, description=description, post=post) 
+    # obj1 = FileSystemStorage()
+    # obj1.save(image)  
+    imageupload = Image(image=image, description=description, post_id=post.id) 
     imageupload.save()   
-    return imageupload
 
