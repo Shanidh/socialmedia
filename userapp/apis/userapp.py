@@ -43,7 +43,8 @@ class LoginAPI(APIView):
                    "Success": True,
                    "msg": "Login Success",
                 }
-                return Response(status=status.HTTP_201_CREATED, data=data)
+                # return Response(status=status.HTTP_201_CREATED, data=data)
+                return redirect("userapp:post_list") 
             else:
             # Login failed
                 return Response({'error': 'Invalid login credentials'}, status=status.HTTP_401_UNAUTHORIZED)
