@@ -28,6 +28,7 @@ from ..seriliazers import (
 
 from ..services import (
     post_like,
+    post_dislike,
 )
 
 
@@ -166,4 +167,34 @@ class PostLikeAPI(APIView):
                 "Success": False,
                 "msg": "Post liking failed",
             }
-            return Response(status=status.HTTP_400_BAD_REQUEST, data=data)                
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=data)
+
+
+class PostDislikeAPI(APIView):
+    authentication_classes = [SessionAuthentication]
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        try:
+            serializer = PostLikeSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            with transaction.atomic():
+                result = post_dislike(user=user, **serializer.validated_data)
+                data = {
+                    "Success": True,
+                    "msg": "Disliked successfully.",
+                }
+            return Response(status=status.HTTP_200_OK, data=data)
+        except ValidationError as e:
+            mes = "\n".join(e.messages)
+            raise ValidationError(mes)
+        except Exception:
+            error_info = "\n".join(traceback.format_exception(*sys.exc_info()))
+            print(error_info)
+            data = {
+                "Success": False,
+                "msg": "Post disliking failed",
+            }
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=data)                               

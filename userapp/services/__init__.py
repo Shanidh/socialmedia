@@ -4,4 +4,5 @@ from .userapp import (
 
 from .userpost import (
     post_like,
+    post_dislike,
 )
